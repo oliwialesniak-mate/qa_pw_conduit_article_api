@@ -11,6 +11,7 @@ export const test = base.extend<
     contextsNumber;
     infoTestLog;
     addAllureTestHierarchy;
+    authToken: string;
   },
   {
     logger;
@@ -57,5 +58,23 @@ export const test = base.extend<
       await use('addAllureTestHierarhy');
     },
     { scope: 'test', auto: true },
+  ],
+
+  authToken: [
+    async ({ request }, use) => {
+      const loginResponse = await request.post('/api/users/login', {
+        data: {
+          user: {
+            email: 'testuser@gmail.com',
+            password: 'Test123',
+          },
+        },
+      });
+
+      const loginJson = await loginResponse.json();
+      const token = loginJson.user.token;
+      await use(token);
+    },
+    { scope: 'test' },
   ],
 });
