@@ -7,7 +7,8 @@ import {
   UNPROCESSABLE_ENTITY,
 } from '../../../src/constants/responceCodes';
 
-test.describe('Creation article test', () => {
+test.describe('Article creation tests', () => {
+
   test('Create article with empty tags array', async ({
     articlesApi,
     authToken,
@@ -27,7 +28,7 @@ test.describe('Creation article test', () => {
     expect(response.status()).toBe(SUCCESS_CODE);
   });
 
-  test('Create article with empty body', async ({
+  test('Fail to create article with empty body', async ({
     articlesApi,
     authToken,
     logger,
@@ -42,10 +43,11 @@ test.describe('Creation article test', () => {
     };
 
     const response = await articlesApi.createArticle(newArticle, authToken);
+
     expect(response.status()).toBe(UNPROCESSABLE_ENTITY);
   });
 
-  test('Create article with empty title', async ({
+  test('Fail to create article with empty title', async ({
     articlesApi,
     authToken,
     logger,
@@ -60,10 +62,14 @@ test.describe('Creation article test', () => {
     };
 
     const response = await articlesApi.createArticle(newArticle, authToken);
+
     expect(response.status()).toBe(UNPROCESSABLE_ENTITY);
   });
 
-  test('Create article with empty title', async ({ articlesApi, logger }) => {
+  test('Fail to create article as unauthorized user', async ({
+    articlesApi,
+    logger,
+  }) => {
     const articleData = generateNewArticleData(logger, 0);
 
     const newArticle = {
@@ -74,10 +80,11 @@ test.describe('Creation article test', () => {
     };
 
     const response = await articlesApi.createArticle(newArticle, '');
+
     expect(response.status()).toBe(UNAUTHORIZED);
   });
 
-  test('Create article with all fields', async ({
+  test('Create article with all valid fields', async ({
     articlesApi,
     authToken,
     logger,
@@ -95,4 +102,5 @@ test.describe('Creation article test', () => {
 
     expect(response.status()).toBe(SUCCESS_CODE);
   });
+
 });
