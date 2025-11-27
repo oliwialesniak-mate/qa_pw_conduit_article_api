@@ -12,7 +12,7 @@ export class ProfilesApi extends BaseAPI {
     return await this.step(`Get profile for a user`, async () => {
       return await this.request.get(ROUTES.profiles(username).index, {
         headers: {
-          authorization: `Token ${token}`,
+          ...(token ? { authorization: `Token ${token}` } : {}),
           ...this._headers,
         },
       });
@@ -44,26 +44,20 @@ export class ProfilesApi extends BaseAPI {
   async assertUsernameHasCorrectValue(response, username) {
     await this.step(`Assert response body has correct username`, async () => {
       const body = await this.parseBody(response);
-
       expect(body.profile.username).toBe(username);
     });
   }
 
   async assertImageHasCorrectValue(response, image) {
-    await this.step(
-      `Assert response body has correct image value`,
-      async () => {
-        const body = await this.parseBody(response);
-
-        expect(body.profile.image).toBe(image);
-      },
-    );
+    await this.step(`Assert response body has correct image value`, async () => {
+      const body = await this.parseBody(response);
+      expect(body.profile.image).toBe(image);
+    });
   }
 
   async assertBioHasCorrectValue(response, bio) {
     await this.step(`Assert response body has correct bio`, async () => {
       const body = await this.parseBody(response);
-
       expect(body.profile.bio).toBe(bio);
     });
   }
@@ -73,7 +67,6 @@ export class ProfilesApi extends BaseAPI {
       `Assert response body has '${value}' in 'following' field`,
       async () => {
         const body = await this.parseBody(response);
-
         expect(body.profile.following).toBe(value);
       },
     );
